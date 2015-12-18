@@ -6,7 +6,6 @@ from tracks import VideoTrack, AudioTrack, SubTrack
 class MediaInfo:
     def __init__(self, input):
         self.video, self.audio, self.subs = self.generate(input)
-        print self.video, self.audio, self.subs
 
     def getvideo(self):
         return self.video

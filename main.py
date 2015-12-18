@@ -12,7 +12,10 @@ def main():
     # Split according to number of computers
     # List<List<String> >
     files = getfiles(sys.argv[1:])
+    filecount = 0
     for i in files[0]:
+        filecount += 1
+        print 'File {count}:\t{name}\n'.format(count=filecount, name=i)
         transcoder.transcode(i)
 
 

@@ -49,18 +49,23 @@ def transcode_(item):
         for i in audiotracks:
             if 'English' not in i.language:
                 audiotracks.remove(i)
-        audiotrack = audiotracks[0]
 
         # Audio track encoding
-        if audiotrack.channels > 5:
-            if item.isHD1080:
-                audioencoding = ('6ch', '448')
-            elif item.isHD720:
-                audioencoding = ('6ch', '384')
+        audioencoding = ([], [])
+        for i in audiotracks:
+            if i.channels > 5:
+                if item.isHD1080:
+                    i.audioencoding = ('6ch', '448')
+                elif item.isHD720:
+                    i.audioencoding = ('6ch', '384')
+                else:
+                    i.audioencoding = ('dpl2', '160')
             else:
-                audioencoding = ('dpl2', '160')
-        else:
-            audioencoding = ('dpl2', '160')
+                i.audioencoding = ('dpl2', '160')
+            audioencoding[0].append(i.audioencoding[0])
+            audioencoding[1].append(i.audioencoding[1])
+        audioencoding = (','.join(audioencoding[0]), ','.join(audioencoding[1]))
+        audiotracks = ''.join(str(i.index) for i in audiotracks)
 
         # Subtitles
         subtitles = []
@@ -76,7 +81,7 @@ def transcode_(item):
                   "-q {quality} --cfr -E ffac3 -6 {a_ch} -B {a_bit} -w {w} -l {h} " \
                   "--modulus 2 --native-language eng --native-dub -a {audio} " \
                   "-s {subs} {custom}".format(
-            input=item.filename, output=output, audio=audiotrack,
+            input=item.filename, output=output, audio=audiotracks,
             subs=subtitles,
             w=dimensions[0], h=dimensions[1], custom=customsettings,
             a_ch=audioencoding[0], a_bit=audioencoding[1], quality=quality
@@ -89,12 +94,12 @@ def transcode_(item):
         stdout_, stderr_ = process.communicate()
         if len(stderr_) != 0:
             print 'There was a problem with file {0}'.format(item.filename)
-            for i in stderr_:
-                print i
-        if os.path.getsize(output) <= os.path.getsize(item.filename):
+            print stderr_
+            return
+        elif os.path.getsize(output) <= os.path.getsize(item.filename):
             print 'Transcoding complete for {0}'.format(item.filename)
             return
         else:
             quality -= 2
-    print '{0} could not be processed at a high enough quality, '\
+    print '{0} could not be processed at a high enough quality, ' \
           'please use original'.format(item.filename)
