@@ -70,7 +70,8 @@ def transcode_(item):
         # Subtitles
         subtitles = []
         for i in item.mediainfo.subs:
-            subtitles.append(str(i.index))
+            if 'English' in i.language or 'Unknown' in i.language:
+                subtitles.append(str(i.index))
         subtitles = ','.join(subtitles)
 
         # Output name
