@@ -11,8 +11,7 @@ def check():
 
 
 def transcode(input):
-    # item = getinfo(input)
-    item = { 'filename': input }
+    item = getinfo(input)
     transcode_(item)
     print 'Complete'
 
