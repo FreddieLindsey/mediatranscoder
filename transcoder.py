@@ -11,8 +11,8 @@ def check():
 
 
 def transcode(input):
-    print input
-    item = getinfo(input)
+    # item = getinfo(input)
+    item = { 'filename': input }
     transcode_(item)
     print 'Complete'
 
@@ -25,6 +25,25 @@ def getinfo(input):
                                stderr=subprocess.PIPE)
     stdout_, stderr_ = process.communicate()
     return TranscodeItem(input, stdout_, stderr_)
+
+
+def complete(item):
+    delete(item, '_complete')
+
+
+def delete(item, folder='_delete'):
+    filename, fileext = os.path.splitext(item)
+    name = filename.split('/')[-1]
+    filedir = '/'.join(filename.split('/')[:-1] + [folder])
+    if not os.path.exists(filedir):
+        os.makedirs(filedir)
+        os.mkdir(filedir)
+    print 'Moving original file:\t{name}\nTo:\t\t{dir}'.format(
+        name=name, dir=filedir
+    )
+    out = filedir + '/' + name + fileext
+    print out
+    os.rename(item, out)
 
 
 def transcode_(item):
@@ -93,12 +112,14 @@ def transcode_(item):
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         stdout_, stderr_ = process.communicate()
-        if len(stderr_) != 0:
+        if 'Encode done!' not in stdout_:
             print 'There was a problem with file {0}'.format(item.filename)
             print stderr_
+            delete(item.filename)
             return
         elif os.path.getsize(output) <= os.path.getsize(item.filename):
             print 'Transcoding complete for {0}'.format(item.filename)
+            complete(item.filename)
             return
         else:
             quality -= 2
