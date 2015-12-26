@@ -26,11 +26,11 @@ def getinfo(input):
     return TranscodeItem(input, stdout_, stderr_)
 
 
-def complete(item):
-    delete(item, '_complete')
+def delete(item):
+    complete(item, '_delete')
 
 
-def delete(item, folder='_delete'):
+def complete(item, folder='_complete'):
     filename, fileext = os.path.splitext(item)
     name = filename.split('/')[-1]
     filedir = '/'.join(filename.split('/')[:-1] + [folder])
@@ -114,6 +114,8 @@ def transcode_(item):
         if 'Encode done!' not in stdout_:
             print 'There was a problem with file {0}'.format(item.filename)
             print stderr_
+            print '----------------------------------'
+            print stdout_
             delete(item.filename)
             return
         elif os.path.getsize(output) <= os.path.getsize(item.filename):
