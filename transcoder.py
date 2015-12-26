@@ -36,7 +36,6 @@ def complete(item, folder='_complete'):
     filedir = '/'.join(filename.split('/')[:-1] + [folder])
     if not os.path.exists(filedir):
         os.makedirs(filedir)
-        os.mkdir(filedir)
     print 'Moving original file:\t{name}\nTo:\t\t{dir}'.format(
         name=name, dir=filedir
     )
