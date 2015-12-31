@@ -81,7 +81,7 @@ def transcode_(item):
                 i.audioencoding = ('dpl2', '160')
             audioencoding[0].append(i.audioencoding[0])
             audioencoding[1].append(i.audioencoding[1])
-        audioencoding = (','.join(audioencoding[0]), ','.join(audioencoding[1]))
+        audioencoding = ','.join(audioencoding[0]), ','.join(audioencoding[1])
         audiotracks = ''.join(str(i.index) for i in audiotracks)
 
         # Subtitles
@@ -89,7 +89,10 @@ def transcode_(item):
         for i in item.mediainfo.subs:
             if 'English' in i.language or 'Unknown' in i.language:
                 subtitles.append(str(i.index))
-        subtitles = ','.join(subtitles)
+        if len(subtitles) > 0:
+            subtitles = '-s ' + ','.join(subtitles)
+        else:
+            subtitles = ''
 
         # Output name
         filename, fileext = os.path.splitext(item.filename)
@@ -98,11 +101,11 @@ def transcode_(item):
         command = "HandBrakeCLI -i \"{input}\" -o \"{output}\" -f mkv -m -e x264 " \
                   "-q {quality} --cfr -E ffac3 -6 {a_ch} -B {a_bit} -w {w} -l {h} " \
                   "--modulus 2 --native-language eng --native-dub -a {audio} " \
-                  "-s {subs} {custom}".format(
-            input=item.filename, output=output, audio=audiotracks,
-            subs=subtitles,
-            w=dimensions[0], h=dimensions[1], custom=customsettings,
-            a_ch=audioencoding[0], a_bit=audioencoding[1], quality=quality
+                  "{subs} {custom}".format(
+          input=item.filename, output=output, audio=audiotracks,
+          subs=subtitles, w=dimensions[0], h=dimensions[1],
+          custom=customsettings, a_ch=audioencoding[0], a_bit=audioencoding[1],
+          quality=quality
         )
         print 'Running:\n', command, '\n'
         args = shlex.split(command)
