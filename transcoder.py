@@ -113,7 +113,7 @@ def transcode_(item):
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         stdout_, stderr_ = process.communicate()
-        if 'Encode done!' not in stdout_:
+        if 'Encode done!' not in stderr_:
             print 'There was a problem with file {0}'.format(item.filename)
             print stderr_
             print '----------------------------------'
