@@ -26,8 +26,12 @@ def getinfo(input):
     return TranscodeItem(input, stdout_, stderr_)
 
 
-def delete(item):
-    complete(item, '_delete')
+def error(item):
+    complete(item, '_error')
+
+
+def outfile(item):
+    complete(item, '_outfile')
 
 
 def complete(item, folder='_complete'):
@@ -109,22 +113,27 @@ def transcode_(item):
         )
         print 'Running:\n', command, '\n'
         args = shlex.split(command)
-        process = subprocess.Popen(args,
-                                   stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE)
-        stdout_, stderr_ = process.communicate()
+        proc = subprocess.Popen(args, bufsize=1,
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            universal_newlines=True)
+        while proc.poll() is None:
+            line = proc.stdout.readline()
+            if line:
+                print line
+        stderr_ = proc.stderr.read()
         if 'Encode done!' not in stderr_:
-            print 'There was a problem with file {0}'.format(item.filename)
+            print 'The file did not finish encoding {0}'.format(item.filename)
             print stderr_
             print '----------------------------------'
-            print stdout_
-            delete(item.filename)
+            error(item.filename)
             return
         elif os.path.getsize(output) <= os.path.getsize(item.filename):
             print 'Transcoding complete for {0}'.format(item.filename)
             complete(item.filename)
+            outfile(output)
             return
         else:
             quality -= 2
     print '{0} could not be processed at a high enough quality, ' \
           'please use original'.format(item.filename)
+    complete(item.filename)
