@@ -82,7 +82,7 @@ def transcode_(item):
             audioencoding[0].append(i.audioencoding[0])
             audioencoding[1].append(i.audioencoding[1])
         audioencoding = ','.join(audioencoding[0]), ','.join(audioencoding[1])
-        audiotracks = ''.join(str(i.index) for i in audiotracks)
+        audiotracks = ','.join(str(i.index) for i in audiotracks)
 
         # Subtitles
         subtitles = []
