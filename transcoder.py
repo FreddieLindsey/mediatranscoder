@@ -116,11 +116,12 @@ def transcode_(item):
         proc = subprocess.Popen(args, bufsize=1,
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
             universal_newlines=True)
+        stderr_ = ''
         while proc.poll() is None:
             line = proc.stdout.readline()
+            stderr_ += line
             if line:
                 print line
-        stderr_ = proc.stderr.read()
         if 'Encode done!' not in stderr_:
             print 'The file did not finish encoding {0}'.format(item.filename)
             print stderr_
