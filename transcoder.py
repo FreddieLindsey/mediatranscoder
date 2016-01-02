@@ -124,7 +124,7 @@ def transcode_(item):
             if line:
                 if 'Encoding' in line:
                     if 'at frame' in line:
-                        sys.stdout.write(line)
+                        print '\x1b[2K\r', line,
                     else:
                         print '\x1b[2K\r',
                         sys.stdout.write(line.replace('\n', ''))
