@@ -19,13 +19,22 @@ def main():
         transcoder.transcode(i)
 
 
+def filter_(files):
+    out = []
+    for i in files:
+        if '-out.mkv' not in i:
+            out.append(i)
+    return out
+
+
 def getfiles(file_args, split=1):
     fileList = []
     for i in file_args:
         if ('*' in i):
-            fileList += glob.glob(i)
+            files = glob.glob(i)
+            fileList += filter_(files)
         else:
-            fileList.append(i)
+            fileList += filter_([i])
     for f in fileList:
         if not os.path.exists(f):
             fileList.remove(f)

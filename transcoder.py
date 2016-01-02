@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import sys
 import shlex
 import subprocess
 
@@ -121,7 +122,12 @@ def transcode_(item):
             line = proc.stdout.readline()
             stderr_ += line
             if line:
-                print line
+                if 'Encoding' in line:
+                    if 'at frame' in line:
+                        sys.stdout.write(line)
+                    else:
+                        print '\x1b[2K\r',
+                        sys.stdout.write(line.replace('\n', ''))
         if 'Encode done!' not in stderr_:
             print 'The file did not finish encoding {0}'.format(item.filename)
             print stderr_
