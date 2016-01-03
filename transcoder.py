@@ -65,7 +65,7 @@ def transcode_(item):
 
         # Audio tracks
         def getchannels(x):
-            return x.channels
+            return x.channels * 1000 - x.index
 
         audiotracks = sorted(item.mediainfo.audio, key=getchannels)
         audiotracks.reverse()
