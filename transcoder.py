@@ -93,7 +93,7 @@ def transcode_(item):
         # Subtitles
         subtitles = []
         for i in item.mediainfo.subs:
-            if hasattr(i, 'language') and 'English' in i.language or 'Unknown' in i.language:
+            if hasattr(i, 'language') and ('English' in i.language or 'Unknown' in i.language):
                 subtitles.append(str(i.index))
         if len(subtitles) > 0:
             subtitles = '-s ' + ','.join(subtitles)
