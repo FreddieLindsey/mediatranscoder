@@ -68,6 +68,7 @@ def transcode_(item):
             return x.channels
 
         audiotracks = sorted(item.mediainfo.audio, key=getchannels)
+        audiotracks.reverse()
         for i in audiotracks:
             if 'English' not in i.language:
                 audiotracks.remove(i)
