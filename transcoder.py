@@ -70,7 +70,7 @@ def transcode_(item):
         audiotracks = sorted(item.mediainfo.audio, key=getchannels)
         audiotracks.reverse()
         for i in audiotracks:
-            if 'English' not in i.language:
+            if hasattr(i, 'language') and 'English' not in i.language:
                 audiotracks.remove(i)
 
         # Audio track encoding
@@ -93,7 +93,7 @@ def transcode_(item):
         # Subtitles
         subtitles = []
         for i in item.mediainfo.subs:
-            if 'English' in i.language or 'Unknown' in i.language:
+            if hasattr(i, 'language') and 'English' in i.language or 'Unknown' in i.language:
                 subtitles.append(str(i.index))
         if len(subtitles) > 0:
             subtitles = '-s ' + ','.join(subtitles)
