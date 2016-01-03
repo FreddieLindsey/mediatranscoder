@@ -14,7 +14,6 @@ def check():
 def transcode(input):
     item = getinfo(input)
     transcode_(item)
-    print 'Complete'
 
 
 def getinfo(input):
@@ -41,12 +40,12 @@ def complete(item, folder='_complete'):
     filedir = '/'.join(filename.split('/')[:-1] + [folder])
     if not os.path.exists(filedir):
         os.makedirs(filedir)
-    print 'Moving original file:\t{name}\nTo:\t\t{dir}'.format(
-        name=name, dir=filedir
-    )
     out = filedir + '/' + name + fileext
-    print out
+    print 'Moving file:\t\t{name}\nTo:\t\t\t{out}'.format(
+        name=name, out=out
+    )
     os.rename(item, out)
+    print
 
 
 def transcode_(item):
@@ -130,13 +129,13 @@ def transcode_(item):
                         print '\x1b[2K\r',
                         sys.stdout.write(line.replace('\n', ''))
         if 'Encode done!' not in stderr_:
-            print 'The file did not finish encoding {0}'.format(item.filename)
+            print '\n\nThe file did not finish encoding {0}\n'.format(item.filename)
             print stderr_
             print '----------------------------------'
             error(item.filename)
             return
         elif os.path.getsize(output) <= os.path.getsize(item.filename):
-            print 'Transcoding complete for {0}'.format(item.filename)
+            print '\n\nTranscoding complete for {0}\n'.format(item.filename)
             complete(item.filename)
             outfile(output)
             return
